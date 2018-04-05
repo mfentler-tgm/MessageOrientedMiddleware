@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="." default="jar" name="jmschat">
+
+  <property name="class.dir" value="classes" />
+
+  <!-- Clean -->
+  <target name="clean">
+	<delete dir="${class.dir}" quiet="true" />
+  </target>
+
+  <target name="init">
+	<mkdir dir="${class.dir}" />
+
+	<path id="javac.classpath">
+		<pathelement path="${class.dir}" />
+		<fileset dir="lib">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+  </target>
+
+  <!-- Compile -->
+  <target name="compile" depends="init" description="Compile all Java">
+	<javac srcdir="src" destdir="${class.dir}" includeantruntime="false">
+		<classpath refid="javac.classpath" />
+	</javac>
+	<copy todir="${class.dir}">
+		<fileset dir="src">
+			<include name="**/*.properties" />
+			<include name="**/*.xml" />
+		</fileset>
+	</copy>
+  </target>
+
+  <!-- Run-Sender -->
+  <target name="run-sender" depends="compile" description="Runs a simple sender">
+	<echo>Running sender.</echo>
+	<java classname="JMSChatSender" fork="yes" maxmemory="100M">
+		<classpath refid="javac.classpath" />
+	</java>
+  </target>
+
+  <!-- Run-Receiver -->
+  <target name="run-receiver" depends="compile" description="Runs a simple receiver.">
+	<echo>Running receiver.</echo>
+	<java classname="JMSChatReceiver" fork="yes" maxmemory="100M">
+		<classpath refid="javac.classpath" />
+	</java>
+  </target>
+
+
+</project>
